@@ -2,14 +2,17 @@
 
 %{
 
-int nbr_de_lignes = 0 ;
+#include<stdio.h>
+int nbr_de_lignes = 1 ;
 
 %}
 
 lettre [a-zA-Z]
 chiffre [0-9]
-IDF {lettre}({lettre}|{chiffre})*
+car [^ ,\n\t]
+IDF {lettre}{car}*
 cst {chiffre}+
+chaine \'[^\']*\'
 
 
 %%
@@ -28,6 +31,8 @@ Reel {printf ("mot cle type %s \n",yytext);}
     printf ("IDF \n");}
 } 
 \n {nbr_de_lignes++ ;}
+"{" {printf("accolade_ouvr\n");}
+"}" {printf("accolade_ferm\n");}
 := {printf("affect \n");}
 ; {printf("pnt_virgul \n");}
 "*" {printf("multiplication \n");}
@@ -38,6 +43,8 @@ Reel {printf ("mot cle type %s \n",yytext);}
 "(" {printf ("parenthese_ouvr \n");}
 ")" {printf ("parenthese_ferm \n");}
 \' {printf ("Guillemets \n");}
+{chaine} {printf("chainde de car \n");}
+[ \t] {printf("");}
 . {printf("erreur lexicale a la ligne %d \n", nbr_de_lignes);} 
 
 
@@ -50,4 +57,5 @@ int main(){
     return 0;
 }
 
+point virgul , comments 
 
