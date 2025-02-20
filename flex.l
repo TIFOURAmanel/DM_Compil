@@ -3,19 +3,22 @@
 %{
 
 #include<stdio.h>
-int nbr_de_lignes = 1 ;
+int num_de_lignes = 1 ;
 
 %}
 
 lettre [a-zA-Z]
 chiffre [0-9]
-car [^ ,\n\t]
+car [^ ,'\n\t]
 IDF {lettre}{car}*
 cst {chiffre}+
 chaine \'[^\']*\'
+commentaire1 \#\#[^\n]
+commentaire2 \{--([.|\n]*)--\}
 
 
 %%
+{commentaire2} {printf("commentaire sur plusiurs lignes\n");}
 MainProgram {printf("mot cle %s \n", yytext);}
 Declaration {printf ("mot cle %s \n",yytext);}
 Body {printf ("mot cle %s \n",yytext);}
@@ -28,27 +31,26 @@ Reel {printf ("mot cle type %s \n",yytext);}
 {IDF} { if (yyleng > 12) 
     {printf ("erreur lexicale : le IDF depasse 12 caracteres \n");}
     else {
-    printf ("IDF \n");}
+    printf ("IDF %s \n",yytext);}
 } 
-\n {nbr_de_lignes++ ;}
-"{" {printf("accolade_ouvr\n");}
-"}" {printf("accolade_ferm\n");}
-:= {printf("affect \n");}
-; {printf("pnt_virgul \n");}
-"*" {printf("multiplication \n");}
-"-" {printf("soustract \n");}
-"+" {printf("addition \n");}
+{chiffre} {printf ("chiffre \n");}
+{commentaire1} {printf("commentaire sur une ligne: %s \n",yytext);}
+\n {num_de_lignes++ ;}
+"{" {printf("accolade_ouvrante\n");}
+"}" {printf("accolade_fermante \n");}
+:= {printf("affectation := \n");}
+; {printf("pnt_virgul ; \n");}
+"*" {printf("multiplication * \n");}
+"-" {printf("soustract -\n");}
+"+" {printf("addition + \n");}
 , {printf("virgule \n");}
-: {printf ("declaration \n");}
-"(" {printf ("parenthese_ouvr \n");}
-")" {printf ("parenthese_ferm \n");}
+: {printf ("declaration : \n");}
+"(" {printf ("parenthese_ouvrante  \n");}
+")" {printf ("parenthese_fermante \n");}
 \' {printf ("Guillemets \n");}
-{chaine} {printf("chainde de car \n");}
+{chaine} {printf("chainde de car: %s \n",yytext);}
 [ \t] {printf("");}
-. {printf("erreur lexicale a la ligne %d \n", nbr_de_lignes);} 
-
-
-
+. {printf("erreur lexicale a la ligne %d \n", num_de_lignes);} 
 
 %%
 
@@ -57,5 +59,5 @@ int main(){
     return 0;
 }
 
-point virgul , comments 
+
 
